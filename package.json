@@ -15,9 +15,12 @@
   "dependencies": {
     "actions-on-google": "^2.12.0",
     "dialogflow-fulfillment": "^0.6.1",
+    "express": "^4.17.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "salesforce-oauth2": "^0.2.0"
   },
   "devDependencies": {
     "eslint": "^5.12.0",

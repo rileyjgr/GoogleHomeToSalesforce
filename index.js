@@ -6,9 +6,11 @@ const functions = require('firebase-functions');
 const { WebhookClient } = require('dialogflow-fulfillment');
 const { Card, Suggestion } = require('dialogflow-fulfillment');
 const { Carousel } = require('actions-on-google');
-const request = require('request');
+const rq = require('request');
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
+
+let sfaccesstoken = '';
 
 // Job to get oauth details
 exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((context) => {
@@ -30,14 +32,15 @@ exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((c
         client_secret: client_secret,
         username: username,
         password: password
-    } 
-  };
-
+      } 
+    };
   // send request
-  request(options, (error, response, body) => {
+  rq(options, (error, response, body) => {
     if (error) throw new Error(error);
     // add logic to update token in firebase
-    console.log(body);
+    console.log('body: ' + body);
+    var token = body[0].access_token;
+    return sfaccesstoken = body[0].access_token;
   });
 });
 
@@ -48,9 +51,34 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
 
   function Accounts(agent){
-    // add logic to save
-    agent.add('account hit');
+    let auth = 'Bearer' + ' '+ sfaccesstoken;
+    // Save to salesforce
+    console.log(agent.parameters);
+    
+    let name = agent.parameters.Name;
+        // init options account
+        let options = {
+        method: 'POST',
+        url: 'https://na114.salesforce.com/services/data/v37.0/sobjects/account',
+        headers: { 
+              Authorization: auth,
+              Accept: 'application/json',
+              Content: 'application/json' 
+          },
+          body: {
+              Name: name 
+          },
+          json: true 
+        };
+        // send request
+      rq(options, (error, response, body) => {
+        if (error) throw new Error(error);
+        console.log(body);
+    });
+    console.log(sfaccesstoken);
+    agent.add('Account Saved');
   }
+
   function Contacts(agent){
     // add logic to save
     agent.add('contact hit');

@@ -6,11 +6,11 @@ const functions = require('firebase-functions');
 const { WebhookClient } = require('dialogflow-fulfillment');
 const { Card, Suggestion } = require('dialogflow-fulfillment');
 const { Carousel } = require('actions-on-google');
+const admin = require("firebase-admin");
 const rq = require('request');
 
-process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
-
 let sfaccesstoken = '';
+process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 // Job to get oauth details
 exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((context) => {
@@ -37,9 +37,11 @@ exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((c
   // send request
   rq(options, (error, response, body) => {
     if (error) throw new Error(error);
-    // add logic to update token in firebase
-    console.log('body: ' + body);
-    return sfaccesstoken = body[0].access_token;
+    let res = JSON.parse(body);
+    console.log('nonparsed00: '+ body);
+    console.log('parsed0: '+ res.access_token);
+    // need to wait for this. I am not sure how, but this is correct syntax.
+    return sfaccesstoken = res.access_token;
   });
 });
 
@@ -53,7 +55,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     let auth = 'Bearer' + ' '+ sfaccesstoken;
     // Save to salesforce
     console.log(agent.parameters);
-    
+    console.log('token: ' + auth);
+
     let name = agent.parameters.Name;
         // init options account
         let options = {

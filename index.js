@@ -6,41 +6,39 @@ const functions = require('firebase-functions');
 const { WebhookClient } = require('dialogflow-fulfillment');
 const { Card, Suggestion } = require('dialogflow-fulfillment');
 const { Carousel } = require('actions-on-google');
-const request = require('request-promise');
+const request = require('request');
 
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 // Job to get oauth details
 exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((context) => {
     console.log('runs every 30 minutes');
+    // init and gather env variables
+    let client_id = `${functions.config().sfclient_id.key}`;
+    let client_secret =`${functions.config().sfclient_secret.key}`;
+    let username =`${functions.config().sfusername.key}`;
+    let password =`${functions.config().sfpassword.key}`;
 
-    // set options for oauth
-    let options = {
-      method: 'POST',
-      uri: 'https://na114.lightning.force.com/services/oauth2/token',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      form: {
+    // options for request
+    let options = { 
+    method: 'POST',
+    url: 'https://na114.salesforce.com/services/oauth2/token',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+    formData: { 
         grant_type: 'password',
-        client_id: `${functions.config().salesforceoauth.id}`,
-        client_secret: `${functions.config().salesforceoauth.key}`,
-        username:`${functions.config().salesforce.username}`,
-        password:`${functions.config().salesforce.password}`
-      }
-    }
+        client_id: client_id,
+        client_secret: client_secret,
+        username: username,
+        password: password
+    } 
+  };
 
-    // start request 
-    request(options)
-      // eslint-disable-next-line prefer-arrow-callback
-      .then((body)=>{
-        // send request and save data 
-        console.log(body);
-        return null;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  // send request
+  request(options, (error, response, body) => {
+    if (error) throw new Error(error);
+    // add logic to update token in firebase
+    console.log(body);
+  });
 });
 
 // Start dialog flow response

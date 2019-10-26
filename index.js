@@ -39,7 +39,6 @@ exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((c
     if (error) throw new Error(error);
     // add logic to update token in firebase
     console.log('body: ' + body);
-    var token = body[0].access_token;
     return sfaccesstoken = body[0].access_token;
   });
 });

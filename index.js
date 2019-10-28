@@ -1,3 +1,4 @@
+/* eslint-disable promise/catch-or-return */
 // See https://github.com/dialogflow/dialogflow-fulfillment-nodejs
 // for Dialogflow fulfillment library docs, samples, and to report issues
 'use strict';
@@ -9,11 +10,12 @@ const { Carousel } = require('actions-on-google');
 const admin = require("firebase-admin");
 const rq = require('request');
 
-let sfaccesstoken = '';
+//var sfaccesstoken;
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 // Job to get oauth details
 exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((context) => {
+  /*
     console.log('runs every 30 minutes');
     // init and gather env variables
     let client_id = `${functions.config().sfclient_id.key}`;
@@ -21,28 +23,51 @@ exports.salesForceOauth = functions.pubsub.schedule('every 30 minutes').onRun((c
     let username =`${functions.config().sfusername.key}`;
     let password =`${functions.config().sfpassword.key}`;
 
-    // options for request
-    let options = { 
-    method: 'POST',
-    url: 'https://na114.salesforce.com/services/oauth2/token',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
-    formData: { 
-        grant_type: 'password',
-        client_id: client_id,
-        client_secret: client_secret,
-        username: username,
-        password: password
-      } 
-    };
-  // send request
-  rq(options, (error, response, body) => {
-    if (error) throw new Error(error);
-    let res = JSON.parse(body);
-    console.log('nonparsed00: '+ body);
-    console.log('parsed0: '+ res.access_token);
-    // need to wait for this. I am not sure how, but this is correct syntax.
-    return sfaccesstoken = res.access_token;
-  });
+    function initialize() {
+      // Setting URL and headers for request
+      let options = { 
+          method: 'POST',
+          url: 'https://na114.salesforce.com/services/oauth2/token',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+          formData: { 
+              grant_type: 'password',
+              client_id: client_id,
+              client_secret: client_secret,
+              username: username,
+              password: password
+            } 
+          };
+      // Return new promise 
+      return new Promise(((resolve, reject) => {
+        // Do async job
+          rq(options, (err, resp, body) => {
+              if (err) {
+                  reject(err);
+              } else {
+                  resolve(JSON.parse(body));
+              }
+          })
+      }))
+  
+  }
+  
+  function main() {
+      var initializePromise = initialize();
+      // eslint-disable-next-line promise/always-return
+      initializePromise.then((result) => {
+          console.log('result: ')
+          console.log(result.access_token);
+          sfaccesstoken = result.access_token;
+          console.log("token: ");
+          // Use user details from here
+          console.log(sfaccesstoken);
+      }, (err) => {
+          console.log(err);
+      })
+  }
+  
+  main();
+*/
 });
 
 // Start dialog flow response
@@ -50,40 +75,186 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   const agent = new WebhookClient({ request, response });
   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+  
 
   function Accounts(agent){
-    let auth = 'Bearer' + ' '+ sfaccesstoken;
-    // Save to salesforce
-    console.log(agent.parameters);
-    console.log('token: ' + auth);
+      let sfaccesstoken;
+      let client_id = `${functions.config().sfclient_id.key}`;
+      let client_secret =`${functions.config().sfclient_secret.key}`;
+      let username =`${functions.config().sfusername.key}`;
+      let password =`${functions.config().sfpassword.key}`;
 
-    let name = agent.parameters.Name;
-        // init options account
-        let options = {
-        method: 'POST',
-        url: 'https://na114.salesforce.com/services/data/v37.0/sobjects/account',
-        headers: { 
-              Authorization: auth,
-              Accept: 'application/json',
-              Content: 'application/json' 
-          },
-          body: {
-              Name: name 
-          },
-          json: true 
-        };
-        // send request
-      rq(options, (error, response, body) => {
-        if (error) throw new Error(error);
-        console.log(body);
-    });
-    console.log(sfaccesstoken);
-    agent.add('Account Saved');
+      function initialize() {
+        // Setting URL and headers for request
+        let options = { 
+            method: 'POST',
+            url: 'https://tcshackathon-dev-ed.my.salesforce.com/services/oauth2/token',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+            formData: { 
+                grant_type: 'password',
+                client_id: client_id,
+                client_secret: client_secret,
+                username: username,
+                password: password
+              } 
+            };
+        // Return new promise 
+        return new Promise(((resolve, reject) => {
+          // Do async job
+            rq(options, (err, resp, body) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(JSON.parse(body));
+                }
+            })
+        }))
+    
+    }
+      function saveToSF(){
+        let auth = 'Bearer' + ' '+ sfaccesstoken;
+        // Save to salesforce
+        console.log(agent.parameters);
+        console.log('token: ' + auth);
+
+        let name = agent.parameters.Name;
+            // init options account
+            let options = {
+            method: 'POST',
+            url: 'https://tcshackathon-dev-ed.my.salesforce.com/services/data/v37.0/sobjects/account',
+            headers: { 
+                  Authorization: auth,
+                  Accept: 'application/json',
+                  Content: 'application/json' 
+              },
+              body: {
+                  Name: name 
+              },
+              json: true 
+          };
+            // send request
+          rq(options, (error, response, body) => {
+            if (error) throw new Error(error);
+            console.log(body);
+            
+        });
+        console.log(sfaccesstoken);
+        
+    }
+
+    function main() {
+        var initializePromise = initialize();
+        // eslint-disable-next-line promise/always-return
+        initializePromise.then((result) => {
+            console.log('result: ')
+            console.log(result.access_token);
+            sfaccesstoken = result.access_token;
+            console.log("token: ");
+            // Use user details from here
+            console.log(sfaccesstoken);
+            saveToSF();
+        }, (err) => {
+            console.log(err);
+        })
+
+        agent.add('Account Saved');
+    }
+    main();
+    
   }
 
   function Contacts(agent){
     // add logic to save
-    agent.add('contact hit');
+      let sfaccesstoken;
+      let client_id = `${functions.config().sfclient_id.key}`;
+      let client_secret =`${functions.config().sfclient_secret.key}`;
+      let username =`${functions.config().sfusername.key}`;
+      let password =`${functions.config().sfpassword.key}`;
+
+      function initialize() {
+        // Setting URL and headers for request
+        let options = { 
+            method: 'POST',
+            url: 'https://tcshackathon-dev-ed.my.salesforce.com/services/oauth2/token',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+            formData: { 
+                grant_type: 'password',
+                client_id: client_id,
+                client_secret: client_secret,
+                username: username,
+                password: password
+              } 
+            };
+        // Return new promise 
+        return new Promise(((resolve, reject) => {
+          // Do async job
+            rq(options, (err, resp, body) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(JSON.parse(body));
+                }
+            })
+        }))
+    
+    }
+      function saveToSF(){
+        let auth = 'Bearer' + ' '+ sfaccesstoken;
+        // Save to salesforce
+        console.log(agent.parameters);
+        console.log('token: ' + auth);
+
+        let firstName     = agent.parameters.FirstName;
+        let lastName      = agent.parameters.LastName;
+        let phoneNumber   = agent.parameters.PhoneNumber;
+        let email         = agent.parameters.Email;
+
+        // init options account
+        let options = {
+            method: 'POST',
+            url: 'https://tcshackathon-dev-ed.my.salesforce.com/services/data/v37.0/sobjects/Contact',
+            headers: { 
+                  Authorization: auth,
+                  Accept: 'application/json',
+                  Content: 'application/json' 
+              },
+              body: {
+                  FirstName: firstName,
+                  LastName: lastName,
+                  HomePhone: phoneNumber,
+                  Email: email
+              },
+              json: true 
+          };
+            // send request
+          rq(options, (error, response, body) => {
+            if (error) throw new Error(error);
+            // Salesforce response
+            console.log(body);
+            
+        });
+        console.log(sfaccesstoken);
+        
+    }
+
+    function main() {
+        var initializePromise = initialize();
+        // eslint-disable-next-line promise/always-return
+        initializePromise.then((result) => {
+            console.log('result: ')
+            console.log(result.access_token);
+            sfaccesstoken = result.access_token;
+            console.log("token: ");
+            // Use user details from here
+            console.log(sfaccesstoken);
+            saveToSF();
+        }, (err) => {
+            console.log(err);
+        })
+        agent.add('Contact Saved');
+    }
+    main();
+
   }
   function welcome(agent) {
     agent.add(`Welcome to my agent!`);

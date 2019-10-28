@@ -1,0 +1,11 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+        <div class='header'>
+        	<p>Talk to Chat Bot</p>
+        </div>
+        <iframe
+                allow="microphone;"
+                width="616"
+                height="600"
+                src="https://console.dialogflow.com/api-client/demo/embedded/34cbbb84-e365-42a3-b18e-3aad165deefb">
+        </iframe>
+</aura:component>

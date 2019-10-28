@@ -1,0 +1,8 @@
+public class AccountMap {
+	@AuraEnabled
+    public Static List<Account> fetchAccounts(){
+        List<Account> accountList = new List<Account>();
+        accountList = [Select Id, BillingCity, BillingStreet, BillingPostalCode, BillingState, Name, Description  from Account];        
+        return accountList;
+    }
+}

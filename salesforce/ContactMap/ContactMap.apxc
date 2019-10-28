@@ -1,0 +1,9 @@
+public class ContactMap {
+	@AuraEnabled
+    public Static List<Contact> fetchContacts(){
+        List<Contact> contactList = new List<Contact>();
+        contactList = [Select Id, Name, MailingStreet, MailingCity, MailingState,MailingPostalCode, Description from Contact];
+        
+        return contactList;
+    }
+}

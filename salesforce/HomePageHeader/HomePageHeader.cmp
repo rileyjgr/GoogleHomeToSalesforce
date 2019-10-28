@@ -1,0 +1,11 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+  <!-- Optional component attributes here -->
+  <!-- Optional HTML markup -->
+  <div class="container">
+  <a href="#default" class="logo">Tata Consultancy Services</a>
+  <div class="header-right">
+    <a href="https://tcshackathon-dev-ed.lightning.force.com/lightning/o/Account/list?filterName=Recent">Accounts</a>
+    <a href="https://tcshackathon-dev-ed.lightning.force.com/lightning/o/Contact/list?filterName=Recent">Contacts</a>
+  </div>
+</div>
+</aura:component>

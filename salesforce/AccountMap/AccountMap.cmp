@@ -1,0 +1,18 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" 
+                controller="AccountMap">
+	    <!-- attributes -->
+    <aura:attribute name="mapMarkers" type="Object"/>
+    <aura:attribute name="zoomLevel" type="Integer" />
+    <div class='header'>
+        <p>All Accounts Map</p>
+    </div>
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    	<!-- the map component -->
+        <div class="container">
+            <lightning:map aura:id="accountMap"
+                    mapMarkers="{! v.mapMarkers }" 
+                    zoomLevel="{!v.zoomLevel}" 
+                    listView="hidden"/>
+        </div>    
+</aura:component>

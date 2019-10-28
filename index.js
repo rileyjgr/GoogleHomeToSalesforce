@@ -117,7 +117,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         console.log(agent.parameters);
         console.log('token: ' + auth);
 
-        let name = agent.parameters.Name;
+        let Name        = agent.parameters.CompanyName;
+        let PhoneNumber = agent.parameters.PhoneNumber;
+        let Street      = agent.parameters.Street[0];
+        let City        = agent.parameters.City[0];
+        let State       = agent.parameters.State;
+        let ZipCode     = agent.parameters.ZipCode;
+
+        const sfPost ={Name, PhoneNumber, Street, City, State, ZipCode};
+        console.log('to Salesforce: '+ sfPost);
+
             // init options account
             let options = {
             method: 'POST',
@@ -128,7 +137,12 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
                   Content: 'application/json' 
               },
               body: {
-                  Name: name 
+                  Name: Name,
+                  Phone: PhoneNumber,
+                  BillingStreet: Street,
+                  BillingCity: City,
+                  BillingState: State,
+                  BillingPostalCode: ZipCode
               },
               json: true 
           };
@@ -204,11 +218,16 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         console.log(agent.parameters);
         console.log('token: ' + auth);
 
-        let firstName     = agent.parameters.FirstName;
-        let lastName      = agent.parameters.LastName;
-        let phoneNumber   = agent.parameters.PhoneNumber;
-        let email         = agent.parameters.Email;
+        let LastName      = agent.parameters.Name;
+        let PhoneNumber   = agent.parameters.PhoneNumber;
+        let Email         = agent.parameters.Email;
+        let Street        = agent.parameters.Street;
+        let City          = agent.parameters.City[0];
+        let State         = agent.parameters.State;
+        let ZipCode       = agent.parameters.ZipCode[0];
 
+        const sfPost ={LastName, PhoneNumber, Email, Street, City, State, ZipCode};
+        console.log('to Salesforce: '+ sfPost)
         // init options account
         let options = {
             method: 'POST',
@@ -219,10 +238,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
                   Content: 'application/json' 
               },
               body: {
-                  FirstName: firstName,
-                  LastName: lastName,
-                  HomePhone: phoneNumber,
-                  Email: email
+                  LastName: LastName,
+                  HomePhone: PhoneNumber,
+                  Email: Email,
+                  MailingStreet: Street,
+                  MailingCity: City,
+                  MailingState: State,
+                  MailingPostalCode: ZipCode
               },
               json: true 
           };

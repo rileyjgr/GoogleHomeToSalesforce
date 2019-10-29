@@ -119,13 +119,13 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
         let Name        = agent.parameters.CompanyName;
         let PhoneNumber = agent.parameters.PhoneNumber;
-        let Street      = agent.parameters.Street[0];
-        let City        = agent.parameters.City[0];
+        let Street      = agent.parameters.Street;
+        let City        = agent.parameters.City;
         let State       = agent.parameters.State;
         let ZipCode     = agent.parameters.ZipCode;
 
-        const sfPost ={Name, PhoneNumber, Street, City, State, ZipCode};
-        console.log('to Salesforce: '+ sfPost);
+        //const sfPost ={Name, PhoneNumber, Street, City, State, ZipCode};
+        console.log('to Salesforce: '+ Name, PhoneNumber, Street, City, State, ZipCode);
 
             // init options account
             let options = {
@@ -222,9 +222,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
         let PhoneNumber   = agent.parameters.PhoneNumber;
         let Email         = agent.parameters.Email;
         let Street        = agent.parameters.Street;
-        let City          = agent.parameters.City[0];
+        let City          = agent.parameters.City;
         let State         = agent.parameters.State;
-        let ZipCode       = agent.parameters.ZipCode[0];
+        let ZipCode       = agent.parameters.ZipCode;
 
         const sfPost ={LastName, PhoneNumber, Email, Street, City, State, ZipCode};
         console.log('to Salesforce: '+ sfPost)

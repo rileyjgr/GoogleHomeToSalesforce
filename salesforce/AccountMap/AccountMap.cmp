@@ -1,6 +1,6 @@
 <aura:component implements="flexipage:availableForAllPageTypes" access="global" 
                 controller="AccountMap">
-	    <!-- attributes -->
+	<!-- attributes -->
     <aura:attribute name="mapMarkers" type="Object"/>
     <aura:attribute name="zoomLevel" type="Integer" />
     <div class='header'>

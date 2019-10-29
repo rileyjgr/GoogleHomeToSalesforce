@@ -1,0 +1,27 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+    <lightning:carousel disableAutoRefresh="false" disableAutoScroll="false">
+        <lightning:carouselImage
+                                 src = "https://upload.wikimedia.org/wikipedia/en/b/b1/Tata_Consultancy_Services_Logo.svg"
+                                 header = "TCS Website"
+                                 description = "Learn More."
+                                 alternativeText = "First card accessible description."
+                                 href = "https://www.tcs.com"
+                                 style="width=608.78px; height=373.22;">
+        </lightning:carouselImage>
+        <lightning:carouselImage
+                                 src = "https://washburngames.org/wp-content/uploads/2015/03/TCS50-Logo_For-Merchandise_Colour_290618.jpg"
+                                 header = "TCS Twitter"
+                                 description = "View Updates on Twitter."
+                                 alternativeText = "Second card accessible description."
+                                 href = "https://twitter.com/TCS?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"
+                                 style="width=608.78px; height=373.22;">
+        </lightning:carouselImage>
+        <lightning:carouselImage
+                                 src = "https://act.alz.org/images/content/pagebuilder/NYCM18_charity_logo_RGB_full_color_secondary_stacked.jpg"
+                                 header = "TCS Facebook"
+                                 description = "View Updates on Facebook."
+                                 alternativeText = "Third card accessible description."
+                                 href = "https://www.facebook.com/TataConsultancyServices/">
+        </lightning:carouselImage>
+    </lightning:carousel>
+</aura:component>

@@ -4,7 +4,7 @@ This salesforce application is set up to allow for Dialogflow to run within sale
 
 # UI
 
-![HomePageUi](./homepageui.png)
+![HomePageUi](./ui.png)
 
 # Features
 

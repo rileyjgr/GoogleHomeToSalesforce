@@ -20,3 +20,10 @@ This salesforce application is set up to allow for Dialogflow to run within sale
 ## Salesforce
 - Lightning Components
 - Apex classes
+
+## Developers
+- Riley Griffin
+  -- Training ML model for chat bot
+  -- Creating ML Model for chat bot
+  -- Creating all Lightnining Components
+  

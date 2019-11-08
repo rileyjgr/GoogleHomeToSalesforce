@@ -26,4 +26,4 @@ This salesforce application is set up to allow for Dialogflow to run within sale
   -- Training ML model for chat bot
   -- Creating ML Model for chat bot
   -- Creating all Lightnining Components
-  
+  -- Creating Google Cloud Functions for Firebase integration with Salesforce (over rest)
